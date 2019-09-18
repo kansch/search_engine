@@ -1,0 +1,28 @@
+[
+{
+    "model": "data.camper",
+    "pk": 1,
+    "fields": {
+        "location": "SRID=4326;POINT (-0.6211603 44.8637834)",
+        "price_per_day": 90.0,
+        "weekly_discount": 0.1
+    }
+},
+{
+    "model": "data.camper",
+    "pk": 2,
+    "fields": {
+        "location": "SRID=4326;POINT (-0.7169664 44.8313035)",
+        "price_per_day": 75.0
+    }
+},
+{
+    "model": "data.camper",
+    "pk": 3,
+    "fields": {
+        "location": "SRID=4326;POINT (-9.1952226 38.7436883)",
+        "price_per_day": 85.5,
+        "weekly_discount": 0.25
+    }
+}
+]

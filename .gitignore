@@ -1,0 +1,6 @@
+*.py[co]
+
+# Unit test / coverage reports
+.coverage
+.tox
+htmlcov/
