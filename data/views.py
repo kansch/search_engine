@@ -1,12 +1,12 @@
-import re
-
 from django.contrib.gis.geos import Polygon
+from django.db.models import F
 
-from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework import viewsets
 from django_filters import rest_framework as filters
 
 from .serializers import CamperSerializer
+from .validators import validate_date_range, validate_location
 from .models import Camper
 
 
@@ -18,21 +18,46 @@ class CamperViewSet(viewsets.ReadOnlyModelViewSet):
             method='filter_location',
             label='Location',
             help_text='Campers around this point: lon,lat',
+            validators=[validate_location]
         )
+        start_date = filters.DateFilter(field_name='calendars__end_date')
+        end_date = filters.DateFilter(field_name='calendars__start_date')
+
+        def is_valid(self):
+            is_valid = super().is_valid()
+            start = self.form.cleaned_data.get('start_date', None)
+            end = self.form.cleaned_data.get('end_date', None)
+            if is_valid and (start or end):
+                validate_date_range(start, end)
+            return is_valid
+
+        def filter_queryset(self, queryset):
+            """Manage optionals start_date and end_date
+            filters and price that depends on it."""
+            start = self.form.cleaned_data.pop('start_date', None)
+            end = self.form.cleaned_data.pop('end_date', None)
+            queryset = super().filter_queryset(queryset)
+            # If date are not provided, price returned is the price_per_day.
+            days = 1
+            if start and end:
+                days = (end - start).days + 1
+            price = days * F('price_per_day')
+            # Discount is applied for rentals of 7 days or more.
+            if days >= 7:
+                price = price * (1 - F('weekly_discount'))
+            queryset = queryset.annotate(price=price)
+            return queryset
 
         def filter_location(self, queryset, name, value):
-            float_regex = r'[-+]?\d*\.\d+|\d+'
-            location_regex = '%s,%s' % (float_regex, float_regex)
-            if not re.match(location_regex, value):
-                raise ValidationError(detail='location format should be lon,lat')
+            validate_location(value)
             coords = value.split(',')
-            lon = float(coords[0])
-            lat = float(coords[1])
+            lon, lat = float(coords[0]), float(coords[1])
             bbox = (lon - 0.1, lat - 0.1, lon + 0.1, lat + 0.1)
             polygon = Polygon.from_bbox(bbox)
             return queryset.filter(location__contained=polygon)
 
     serializer_class = CamperSerializer
     queryset = Camper.objects.all()
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
     filterset_class = CamperFilter
+    ordering = ['price']

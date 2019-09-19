@@ -41,4 +41,4 @@ class CamperTestCase(TestCase):
         request = self.client.get(reverse('camper-list'), {'location': 'nan,nan'})
         self.assertEqual(request.status_code, 400)
         response = request.json()
-        self.assertEqual(response, ['location format should be lon,lat'])
+        self.assertEqual(response, {'location': ['Format should be lon,lat']})
