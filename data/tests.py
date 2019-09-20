@@ -24,18 +24,16 @@ class CamperTestCase(TestCase):
 
     def test_filter_location(self):
         # Load searches and check API expected_results
-        directory = os.path.join(os.path.dirname(__file__), 'tests')
-        searches_data = json.load(open(os.path.join(directory, 'level_1_searches.json')))
-        expected_results_data = json.load(open(os.path.join(directory, 'level_1_expected_results.json')))
+        directory = os.path.dirname(__file__)
+        searches_data = json.load(open(os.path.join(directory, 'searches.json')))
+        searches = searches_data['searches']
+        expected_results = searches_data['results']
 
-        for index, search in enumerate(searches_data['searches']):
+        for index, search in enumerate(searches):
             location_filter = '%s,%s' % (search['longitude'], search['latitude'])
             request = self.client.get(reverse('camper-list'), {'location': location_filter})
             self.assertEqual(request.status_code, 200)
-            response = request.json()
-            a = json.dumps(expected_results_data['results'][index]['search_results'], sort_keys=True)
-            b = json.dumps(response, sort_keys=True)
-            self.assertEqual(a, b)
+            self.assertJSONEqual(request.content, expected_results[index]['search_results'])
 
         # Test location format bad request
         request = self.client.get(reverse('camper-list'), {'location': 'nan,nan'})
