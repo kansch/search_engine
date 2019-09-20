@@ -1,0 +1,60 @@
+{
+    "searches": [
+        {
+            "id": 1,
+            "latitude": 38.7436883,
+            "longitude": -9.1952226,
+            "start_date": "2019-08-01",
+            "end_date": "2019-08-06"
+        },
+        {
+            "id": 2,
+            "latitude": 44.8637834,
+            "longitude": -0.6211603,
+            "start_date": "2019-08-01",
+            "end_date": "2019-08-10"
+        },
+        {
+            "id": 3,
+            "latitude": 44.8637834,
+            "longitude": -0.6211603
+        }
+    ],
+    "results": [
+        {
+            "search_id": 1,
+            "search_results": [
+                {
+                    "camper_id": 3,
+                    "price": 513.0
+                }
+            ]
+        },
+        {
+            "search_id": 2,
+            "search_results": [
+                {
+                    "camper_id": 2,
+                    "price": 750.0
+                },
+                {
+                    "camper_id": 1,
+                    "price": 810.0
+                }
+            ]
+        },
+        {
+            "search_id": 3,
+            "search_results": [
+                {
+                    "camper_id": 2,
+                    "price": 75.0
+                },
+                {
+                    "camper_id": 1,
+                    "price": 90.0
+                }
+            ]
+        }
+    ]
+}
