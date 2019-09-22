@@ -56,7 +56,6 @@ class CamperViewSet(viewsets.ReadOnlyModelViewSet):
             return queryset
 
         def filter_location(self, queryset, name, value):
-            validate_location(value)
             coords = value.split(',')
             lon, lat = float(coords[0]), float(coords[1])
             bbox = (lon - 0.1, lat - 0.1, lon + 0.1, lat + 0.1)
