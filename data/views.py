@@ -7,7 +7,7 @@ from django_filters import rest_framework as filters
 
 from .serializers import CamperSerializer
 from .validators import validate_date_range, validate_location
-from .models import Camper
+from .models import Camper, Calendar
 
 
 class CamperViewSet(viewsets.ReadOnlyModelViewSet):
@@ -40,7 +40,14 @@ class CamperViewSet(viewsets.ReadOnlyModelViewSet):
             # If date are not provided, price returned is the price_per_day.
             days = 1
             if start and end:
+                not_available = list(Calendar.objects.filter(
+                    start_date__lt=end,
+                    end_date__gt=start,
+                    camper_is_available=False,
+                ).values_list('camper_id', flat=True))
+
                 days = (end - start).days + 1
+                queryset = queryset.exclude(id__in=not_available)
             price = days * F('price_per_day')
             # Discount is applied for rentals of 7 days or more.
             if days >= 7:
