@@ -22,7 +22,7 @@ class CamperTestCase(TestCase):
         response = request.json()
         self.assertEqual(len(response), 3)
 
-    def test_filters(self):
+    def test_searches(self):
         # Load searches and check API expected_results
         directory = os.path.dirname(__file__)
         searches_data = json.load(open(os.path.join(directory, 'searches.json')))
@@ -40,12 +40,14 @@ class CamperTestCase(TestCase):
             self.assertEqual(request.status_code, 200)
             self.assertJSONEqual(request.content, expected_results[index]['search_results'])
 
+    def test_location_bad_format(self):
         # Test location format bad request
         request = self.client.get(reverse('camper-list'), {'location': 'nan,nan'})
         self.assertEqual(request.status_code, 400)
         response = request.json()
         self.assertEqual(response, {'location': ['Format should be lon,lat']})
 
+    def test_bad_date_range(self):
         # Test date format bad request
         request = self.client.get(reverse('camper-list'), {'start_date': 'bad date format',
                                                            'end_date': 'bad date format'})

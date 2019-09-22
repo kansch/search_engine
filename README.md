@@ -35,7 +35,7 @@ python manage.py runserver
 And use the API
 
 ```
-curl "http://127.0.0.1:8000/api/campers/[?location=lon,lat&start_date=YYY-MM-DD&end_date=YYY-MM-DD]" -v
+curl "http://127.0.0.1:8000/api/campers/[?location=lon,lat&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD]" -v
 ```
 
 You have a root view of the API by visiting `http://127.0.0.1:8000/api/`

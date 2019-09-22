@@ -36,10 +36,6 @@
                 {
                     "camper_id": 2,
                     "price": 750.0
-                },
-                {
-                    "camper_id": 1,
-                    "price": 810.0
                 }
             ]
         },
